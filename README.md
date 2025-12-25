@@ -1,5 +1,4 @@
-# 💬 Baler Chat App V2
-
+# 💬 Quantum Yapper (formerly Baler Chat App V2)
 A modern real-time chat application built with **Node.js**, **Express**, and **Socket.IO**.  
 Baler Chat App V2 supports rooms, user management, and live location sharing — all in a clean and responsive UI.
 
@@ -25,3 +24,4 @@ Baler Chat App V2 supports rooms, user management, and live location sharing —
 - [Bad Words](https://www.npmjs.com/package/bad-words) – Profanity filter
 - [Render](https://render.com/) / [Railway](https://railway.app/) – Free hosting option
 - [Vercel](https://vercel.com/) – For static frontend hosting (optional)
+
