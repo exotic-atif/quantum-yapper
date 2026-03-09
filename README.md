@@ -25,3 +25,4 @@ Baler Chat App V2 supports rooms, user management, and live location sharing —
 - [Render](https://render.com/) / [Railway](https://railway.app/) – Free hosting option
 - [Vercel](https://vercel.com/) – For static frontend hosting (optional)
 
+- LINK [Web](https://quantum-yapper.onrender.com/) - URL
