@@ -1,9 +1,3 @@
-// emit events
-// socket.emit, io.emit, socket.broadcast.emit
-
-// emit to a specific room
-// io.to(room).emit, socket.broadcast.to(room).emit
-
 const express = require("express");
 const path = require("path");
 const http = require("http");
@@ -21,42 +15,32 @@ const {
   getUsersInRoom,
 } = require("./utils/user");
 
-// initialize express
 const app = express();
-// initialize http server
 const server = http.createServer(app);
-// initialize socketio
 const io = socketio(server);
 
 const port = process.env.PORT || 3000;
-// define paths for express config
 const publicDirectoryPath = path.join(__dirname, "../public");
+const MAX_MSG_LENGTH = 2000;
 
-// setup static directory to serve
-app.use(express.static(publicDirectoryPath));
+// Static files with cache headers
+app.use(express.static(publicDirectoryPath, {
+  maxAge: process.env.NODE_ENV === "production" ? "1d" : 0,
+  etag: true,
+}));
 
-// let count = 0;
-
-// server (emit) -> client (receive) - countUpdated
-// client (emit) -> server (receive) - increment
-
-// let's listen for new connections
 io.on("connection", (socket) => {
   console.log("New WebSocket connection");
 
-  // socket.emit("message", generateMessage("Welcome!"));
-   socket.broadcast.emit("message", "A new user has joined!");
-
   socket.on("join", ({ username, room }, callback) => {
-    // specifically emit event according to room name eg: no one can check whats going on in another room
     const { error, user } = addUser({ id: socket.id, username, room });
 
     if (error) {
       return callback(error);
     }
 
-    socket.join(room);
-    socket.emit("message", generateMessage("System", "Welcome to Baler Chat App V2!"));
+    socket.join(user.room);
+    socket.emit("message", generateMessage("System", "Welcome to Quantum Yapper!"));
     socket.broadcast
       .to(user.room)
       .emit("message", generateMessage("System", `${user.username} has joined`));
@@ -68,32 +52,45 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendMessage", (message, callback) => {
-    const filter = new Filter();
-
     const user = getUser(socket.id);
 
     if (!user) {
       return callback("You are not authenticated");
     }
 
-   //  if (filter.isProfane(message)) {
-     //  return callback("hi");
-    // }
+    // Trim and validate
+    if (typeof message !== "string") {
+      return callback("Invalid message");
+    }
+
+    message = message.trim();
+    if (!message) {
+      return callback("Message cannot be empty");
+    }
+
+    if (message.length > MAX_MSG_LENGTH) {
+      return callback("Message too long (max " + MAX_MSG_LENGTH + " characters)");
+    }
+
+    const filter = new Filter();
+    if (filter.isProfane(message)) {
+      return callback("Profanity is not allowed");
+    }
 
     io.to(user.room).emit("message", generateMessage(user.username, message));
     callback();
   });
 
-  //   socket.emit("countUpdated", count);
-
-  //   socket.on("increment", () => {
-  //     count++;
-  // notify only the current connection
-  // socket.emit("countUpdated", count);
-
-  // notify all connections
-  //     io.emit("countUpdated", count);
-  //   });
+  // Typing indicators
+  socket.on("typing", (isTyping) => {
+    const user = getUser(socket.id);
+    if (user) {
+      socket.broadcast.to(user.room).emit("userTyping", {
+        username: user.username,
+        isTyping: !!isTyping,
+      });
+    }
+  });
 
   socket.on("disconnect", () => {
     const user = removeUser(socket.id);
@@ -101,7 +98,7 @@ io.on("connection", (socket) => {
     if (user) {
       io.to(user.room).emit(
         "message",
-        generateMessage("Admin", `${user.username} has left`)
+        generateMessage("System", `${user.username} has left`)
       );
       io.to(user.room).emit("roomData", {
         room: user.room,
@@ -128,7 +125,6 @@ io.on("connection", (socket) => {
   });
 });
 
-// start the server
 server.listen(port, () => {
-  console.log(`Server is up on port ${port}!`);
+  console.log(`Quantum Yapper is running on port ${port}`);
 });

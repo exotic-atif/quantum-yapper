@@ -1,73 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <script src="https://kit.fontawesome.com/4891c1736f.js" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baler Chat App V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Quantum Yapper - Real-time chat room">
+    <meta name="theme-color" content="#0a0e1a">
+    <title>Quantum Yapper — Chat</title>
     <link rel="icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/gpt.css">
 </head>
-
 <body>
     <div class="chat">
-        <div id="sidebar" class="chat__sidebar">
+        <!-- Sidebar Overlay (mobile) -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-        </div>
-        <div class="chat__main">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="chat__sidebar"></aside>
+
+        <!-- Main Chat -->
+        <main class="chat__main">
+            <!-- Mobile Header -->
+            <div class="chat__header">
+                <button class="chat__header-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="chat__header-info">
+                    <div class="chat__header-room" id="header-room">Room</div>
+                    <div class="chat__header-users" id="header-users">0 online</div>
+                </div>
+            </div>
+
+            <!-- Messages -->
             <div id="messages" class="chat__messages"></div>
 
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="typing-dots"><span></span><span></span><span></span></div>
+                <span id="typing-text">Someone is typing...</span>
+            </div>
+
+            <!-- Scroll FAB -->
+            <button class="scroll-fab" id="scroll-fab" aria-label="Scroll to bottom">
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+
+            <!-- Compose -->
             <div class="compose">
-                <!-- <button id="increment">+1</button> -->
                 <form id="message-form">
-                    <input type="text" name="message" placeholder="Enter message" autocomplete="off">
-                    <button type="submit"><i class="fa-solid fa-paper-plane fa-lg"></i> <span
-                            id="sendBtn"></span></button>
+                    <textarea id="message-input" name="message" placeholder="Type a message..." rows="1" maxlength="2000" autocomplete="off"></textarea>
+                    <button type="submit" class="compose-btn compose-btn--send" id="send-btn" aria-label="Send message">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
                 </form>
-                <button id="send-location"><i class="fa-solid fa-location-dot fa-lg"></i> <span
-                        id="locBtn"></span></button>
+                <button id="send-location" class="compose-btn compose-btn--loc" aria-label="Share location">
+                    <i class="fa-solid fa-location-dot"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Templates -->
+    <template id="message-template">
+        <div class="message">
+            <div class="message__bubble">
+                <span class="message__name"></span>
+                <div class="message__text"></div>
+                <div class="message__meta"></div>
             </div>
         </div>
+    </template>
 
-    </div>
-    <script id="message-template" type="text/html">
-        <div class="message">
-            <p>
-                <span class="message__name">{{username}}</span>
-                <span class="message__meta">{{createdAt}}</span> 
-            </p>
-            <p>{{message}}</p>    
+    <template id="sidebar-template">
+        <div class="sidebar-room-header">
+            <div class="room-title">Room <span class="room-name"></span></div>
         </div>
-    </script>
+        <h3 class="list-title">Online</h3>
+        <ul class="users"></ul>
+        <button class="sidebar-leave-btn" id="leave-room-btn">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Leave Room
+        </button>
+    </template>
 
-    <script id="locmessage-template" type="text/html">
-        <div class="message">
-            <p>
-                <span class="message__name">{{username}}</span>
-                <span class="message__meta">{{createdAt}}</span> 
-            </p>
-            <p><a href="{{url}}" target="_blank" style="color: #7C5CBF;">My Current Location</a></p>    
-        </div>
-    </script>
-
-    <script id="sidebar-template" type="text/html">
-        <h2 class="room-title" >Room: {{room}}</h2>
-        <h3 class="list-title" >Users</h3>
-        <ul class="users" >
-            {{#users}}
-                <li> {{username}} </li>
-            {{/users}}
-        </ul>
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/chat.js"></script>
-    <script src="./js/pc-mob.js"></script>
-
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+    <script defer src="/socket.io/socket.io.js"></script>
+    <script defer src="./js/chat.js"></script>
 </body>
-
 </html>

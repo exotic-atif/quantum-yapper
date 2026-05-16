@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baler Chat App V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Quantum Yapper - A futuristic real-time chat experience">
+    <meta name="theme-color" content="#0a0e1a">
+    <title>Quantum Yapper</title>
     <link rel="icon" href="./img/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="./css/gpt.css">
 </head>
-
 <body>
     <div class="centered-form">
         <div class="centered-form__box">
-            <h1>Join</h1>
-            <form action="./chat.html">
-                <label>Display Name</label>
-                <input type="text" name="username" required>
-                <label>Room ID</label>
-                <input type="text" name="room" required>
-                <button style="width: 100%;">Join</button>
+            <h1>Quantum Yapper</h1>
+            <span class="subtitle">Enter a room and start chatting instantly.</span>
+            <form action="./chat.html" id="join-form">
+                <label for="input-username">Display Name</label>
+                <input type="text" id="input-username" name="username" placeholder="Your name" required maxlength="24" autocomplete="off">
+                <label for="input-room">Room ID</label>
+                <input type="text" id="input-room" name="room" placeholder="e.g. general" required maxlength="32" autocomplete="off">
+                <button type="submit" id="join-btn"><i class="fa-solid fa-bolt"></i>&nbsp; Join Room</button>
             </form>
         </div>
-
     </div>
+    <div class="toast" id="toast"></div>
 </body>
-
 </html>

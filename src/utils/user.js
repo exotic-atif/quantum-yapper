@@ -5,7 +5,7 @@ const users = [];
 const addUser = ({ id, username, room }) => {
   // Clean the data
   username = username.trim();
-  room = room.trim();
+  room = room.trim().toLowerCase();
 
   // validate the data
   if (!username || !room) {
@@ -14,19 +14,19 @@ const addUser = ({ id, username, room }) => {
     };
   }
 
-  // Check for existing user
+  // Check for existing user (case-insensitive)
   const existingUser = users.find((user) => {
-    return user.room === room && user.username === username;
+    return user.room === room && user.username.toLowerCase() === username.toLowerCase();
   });
 
   // validate username
   if (existingUser) {
     return {
-      error: "Username is in use!",
+      error: "That username is already taken in this room.",
     };
   }
 
-  //Store user
+  // Store user
   const user = { id, username, room };
   users.push(user);
   return { user };
@@ -45,7 +45,7 @@ const getUser = (id) => {
 };
 
 const getUsersInRoom = (room) => {
-  room = room.trim();
+  room = room.trim().toLowerCase();
   return users.filter((user) => user.room === room);
 };
 
